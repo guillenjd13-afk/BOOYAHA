@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Test de Booyanidad</title>
+
+<style>
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(180deg, #f0f4ff, #ffffff);
+    }
+
+    #container {
+        max-width: 750px;
+        margin: auto;
+        padding: 20px;
+    }
+    /* PANTALLA DE INICIO — CENTRADA Y FUERA DEL FLUJO */
+#start-screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: #ffffff;
+    text-align: center;
+    padding: 20px;
+
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#start-screen.hidden {
+    display: none;
+}
+
+#start-screen h1 {
+    font-size: 42px;
+    margin-bottom: 25px;
+    color: #3a3a3a;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#start-screen button {
+    padding: 15px 40px;
+    font-size: 20px;
+    border-radius: 10px;
+    background: #4f6cff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+#start-screen button:hover {
+    background: #2d49ff;
+    transform: scale(1.05);
+}
+
+
+    h1, h2 {
+        text-align: center;
+        color: #2a2a2a;
+    }
+
+    /* Caja principal de pregunta */
+    .question {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+    }
+
+    .question h3 {
+        margin-top: 0;
+        color: #333;
+    }
+
+    /* Imagen dentro de preguntas */
+   .question-img {
+    width: 100%;          /* La imagen ocupa todo el ancho disponible */
+    height: auto;         /* Mantiene proporción, no se deforma */
+    max-height: 30vh;     /* Evita límites verticales */
+    object-fit: contain;  /* Asegura que la imagen se vea completa */
+    margin: 15px 0;       /* Espacio alrededor */
+    display: block;       /* Evita espacios vacíos por inline */
+}
+    /* Opciones */
+    label {
+        display: block;
+        padding: 10px 15px;
+        margin: 8px 0;
+        background: #f5f7ff;
+        border-radius: 8px;
+        transition: 0.2s ease;
+    }
+
+    label:hover {
+        background: #e1e5ff;
+    }
+
+    input[type="checkbox"] {
+        transform: scale(1.2);
+        margin-right: 10px;
+    }
+
+    /* Botones */
+    button {
+        padding: 12px 25px;
+        cursor: pointer;
+        background: #4f6cff;
+        border: none;
+        color: white;
+        font-size: 16px;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        background: #2d49ff;
+    }
+
+    /* Navegación */
+    .nav-btns {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    #prev-btn {
+        background: #999;
+    }
+
+    #prev-btn:hover {
+        background: #7a7a7a;
+    }
+
+    /* Pantallas ocultas */
+    .hidden {
+        display: none;
+    }
+
+    /* Resultado */
+    #result-img {
+        display: block;
+        margin: 25px auto;
+        max-width: 90%;
+        border-radius: 10px;
+    }
+</style>
+
+</head>
+<body>
+
+<div id="container">
+
+    <!-- PANTALLA INICIO -->
+    <div id="start-screen">
+        <img src="BOOYAH!.png" alt="">
+        <h1>Test de Booyanidad🔥🤑</h1>
+          
+        <div style="text-align:center;">
+          
+            <button id="start-btn">Empezar🥶</button>
+            
+        </div>
+        <img src="zam.jpg" alt="">
+    </div>
+
+    <!-- PREGUNTAS -->
+    <div id="quiz-screen" class="hidden">
+        <div id="question-box"></div>
+
+        <div class="nav-btns">
+            <button id="prev-btn">⟵ Anterior</button>
+            <button id="next-btn">Siguiente ⟶</button>
+        </div>
+    </div>
+
+    <!-- RESULTADO -->
+    <div id="result-screen" class="hidden">
+        <h2>Resultado</h2>
+        <p id="score-text"></p>
+        <p id="comment-text"></p>
+        <img id="result-img">
+        <br><br>
+        <div style="text-align:center;">
+            <button onclick="location.reload()">Reiniciar test</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// =======================================
+// CONFIGURACIÓN DEL QUIZ
+// =======================================
+
+// EJEMPLO — Duplica hasta 15 preguntas
+
+
+const questions = [
+
+    {
+        html: `
+        <div class="question">
+            <h3>1. ¿Quien fundó el booyah!?</h3>
+
+            <img src="p1.jpg" class="question-img">
+
+            <label><input type="checkbox" name="q1"> Goofythere</label>
+            <label><input type="checkbox" name="q1"> Rataroto</label>
+            <label><input type="checkbox" name="q1"> Ramalanto</label>
+            <label><input type="checkbox" name="q1" data-correct="true"> Sky</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>2.¿Quien está betado del reino de los booyanos?</h3>
+
+            <img src="p2.webp" class="question-img">
+
+            <label><input type="checkbox" name="q2"> Lugi</label>
+            <label><input type="checkbox" name="q2"> Franco</label>
+            <label><input type="checkbox" name="q2"> Antony</label>
+            <label><input type="checkbox" name="q2" data-correct="true"> Andres</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>3. ¿Quienes son los portadores del magekyo?</h3>
+
+            <img src="p3.jpg" class="question-img">
+
+            <label><input type="checkbox" name="q3"> Rata</label>
+            <label><input type="checkbox" name="q3"> Goofy</label>
+            <label><input type="checkbox" name="q3"> Mirror</label>
+            <label><input type="checkbox" name="q3" data-correct="true"> Todos los anteriores</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>4. WHO DID THAT MESS</h3>
+
+            <img src="p4.webp" class="question-img">
+
+            <label><input type="checkbox" name="q4" data-correct="true"> YOUUU DID KING😭</label>
+            <label><input type="checkbox" name="q4"> AMBATUBLOU</label>
+            <label><input type="checkbox" name="q4"> boneca ambalabu</label>
+            <label><input type="checkbox" name="q4">teemo tiamat</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>5. ¿Qué es más gay?</h3>
+
+            <img src="p5.webp" class="question-img">
+
+            <label><input type="checkbox" name="q5" data-correct="true"> Ser fan de marvel</label>
+            <label><input type="checkbox" name="q5"> que te guste un hombre</label>
+            <label><input type="checkbox" name="q5" data-correct="true"> jugar padel</label>
+            <label><input type="checkbox" name="q5" data-correct="true"> Bailar Kpop</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>6. ¿cuanto pesa cameliano?</h3>
+
+            <img src="p6.webp" class="question-img">
+
+            <label><input type="checkbox" name="q6"> 80-100kg</label>
+            <label><input type="checkbox" name="q6"> 100-150kg</label>
+            <label><input type="checkbox" name="q6"> 150-300kg</label>
+            <label><input type="checkbox" name="q6" data-correct="true"> ထ</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>7. Quien SIEMPRE FUE LA CARNADA!!</h3>
+
+            <img src="p7.webp" class="question-img">
+
+            <label><input type="checkbox" name="q7" > Crotolamo</label>
+            <label><input type="checkbox" name="q7"> rama travesti</label>
+            <label><input type="checkbox" name="q7" data-correct="true"> Franco</label>
+            <label><input type="checkbox" name="q7" > Uxiono</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>8. WE ARE</h3>
+
+            <img src="p8.webp" class="question-img">
+
+            <label><input type="checkbox" name="q8" data-correct="true"> femboyAmenai</label>
+            <label><input type="checkbox" name="q8"> CHARLIE KIRKKK</label>
+            <label><input type="checkbox" name="q8"> the champions</label>
+            <label><input type="checkbox" name="q8" data-correct="true"> john salchichón</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>9. La tiene rosita como....</h3>
+
+            <img src="p9.webp" class="question-img">
+
+            <label><input type="checkbox" name="q9" data-correct="true"> Majin buu</label>
+            <label><input type="checkbox" name="q9" data-correct="true"> Karen</label>
+            <label><input type="checkbox" name="q9"> Serena williams</label>
+            <label><input type="checkbox" name="q9"> Periplo</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>10. Quien es conocido como el qleaperros</h3>
+
+            <img src="p10.webp" class="question-img">
+
+            <label><input type="checkbox" name="q10">bombooclat</label>
+            <label><input type="checkbox" name="q10"> ozuna</label>
+            <label><input type="checkbox" name="q10">Hole mole</label>
+            <label><input type="checkbox" name="q10" data-correct="true"> Camelianofantome</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>11. Quien tiene un harem de travas</h3>
+
+            <img src="p11.webp" class="question-img">
+
+            <label><input type="checkbox" name="q11">Ronaldo nazario</label>
+            <label><input type="checkbox" name="q11"> Cameliano</label>
+            <label><input type="checkbox" name="q11"data-correct="true"> Andrew</label>
+            <label><input type="checkbox" name="q11"> Rama(el es uno)</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>12. Que conlleva ser un Booyano de corazón</h3>
+
+            <img src="p12.webp" class="question-img">
+
+            <label><input type="checkbox" name="q12" data-correct="true"> Decir BOOYAH!</label>
+            <label><input type="checkbox" name="q12"> Hueler pega</label>
+            <label><input type="checkbox" name="q12"> Monkeyflip</label>
+            <label><input type="checkbox" name="q12" data-correct="true">ser negro</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>13. Me pide </h3>
+
+            <img src="p13.webp" class="question-img">
+
+            <label><input type="checkbox" name="q13"> Líquido que segregan las mamas de los mamíferos</label>
+            <label><input type="checkbox" name="q13" data-correct="true" >leche </label>
+            <label><input type="checkbox" name="q13"> Respuesta incorrecta</label>
+            <label><input type="checkbox" name="q13">La carta de independencia de margarita</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>14. WILIII WILOOOO</h3>
+
+            <img src="p14.jpg" class="question-img">
+
+            <label><input type="checkbox" name="q14" > WONKA</label>
+            <label><input type="checkbox" name="q14"> WILLYY COMPAÑEROO</label>
+            <label><input type="checkbox" name="q14" data-correct="true"> WILAA</label>
+            <label><input type="checkbox" name="q14"> WEREBERTUMORRO</label>
+        </div>`
+    },
+
+    {
+        html: `
+        <div class="question">
+            <h3>15. Aquí comiendo un manguito clásico</h3>
+
+            <img src="p15.jpg" class="question-img">
+
+            <label><input type="checkbox" name="q15"> Asi mimo e megumi</label>
+            <label><input type="checkbox" name="q15" data-correct="true"> Dite algo ahí luca</label>
+            <label><input type="checkbox" name="q15"> Le vamo a da durisimo por el chiquindolo</label>
+            <label><input type="checkbox" name="q15"> Ay SIII AYY SII</label>
+        </div>`
+    }
+
+];
+
+
+
+// =======================================
+// LÓGICA DEL SISTEMA
+// =======================================
+
+let current = 0;
+const total = questions.length;
+const pointsPerQuestion = 100 / total;
+
+const startScreen = document.getElementById("start-screen");
+const quizScreen = document.getElementById("quiz-screen");
+const resultScreen = document.getElementById("result-screen");
+const box = document.getElementById("question-box");
+
+document.getElementById("start-btn").onclick = () => {
+    startScreen.classList.add("hidden");
+    quizScreen.classList.remove("hidden");
+    loadQuestion();
+};
+
+document.getElementById("next-btn").onclick = () => {
+    if (current < total - 1) {
+        current++;
+        loadQuestion();
+    } else {
+        finishQuiz();
+    }
+};
+
+document.getElementById("prev-btn").onclick = () => {
+    if (current > 0) {
+        current--;
+        loadQuestion();
+    }
+};
+
+function loadQuestion() {
+    box.innerHTML = questions[current].html;
+
+    const saved = questions[current].saved;
+    if (saved) {
+        document.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => {
+            cb.checked = saved[i];
+        });
+    }
+
+    document.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => {
+        cb.onchange = () => {
+            const states = Array.from(document.querySelectorAll('input[type="checkbox"]'))
+                .map(c => c.checked);
+            questions[current].saved = states;
+        };
+    });
+}
+
+function finishQuiz() {
+    quizScreen.classList.add("hidden");
+    resultScreen.classList.remove("hidden");
+
+    let score = 0;
+
+    questions.forEach(q => {
+        const temp = document.createElement("div");
+        temp.innerHTML = q.html;
+
+        const correctInputs = Array.from(temp.querySelectorAll("[data-correct='true']")).length;
+
+        let userCorrect = 0;
+        let userWrong = 0;
+
+        if (q.saved) {
+            q.saved.forEach((checked, i) => {
+                const isCorrect = temp.querySelectorAll("input")[i].dataset.correct === "true";
+                if (checked && isCorrect) userCorrect++;
+                if (checked && !isCorrect) userWrong++;
+            });
+        }
+
+        if (userCorrect >= 1 && userWrong === 0) {
+            score += pointsPerQuestion;
+        }
+    });
+
+    score = Math.round(score);
+
+    document.getElementById("score-text").innerText = `Tu puntuación fue: ${score}/100`;
+
+    const comment = document.getElementById("comment-text");
+    const img = document.getElementById("result-img");
+
+    if (score <= 30) {
+        comment.innerText = "Nivel 0–30: No hiciste tu booyatarea 😭";
+        img.src = "IMG_RANGO1.png";
+    } else if (score <= 50) {
+        comment.innerText = "Nivel 30–50: construyendo booyanidad, siguea así 👀";
+        img.src = "IMG_RANGO2.png";
+    } else if (score <= 80) {
+        comment.innerText = "Nivel 50–80: Tu ere un booyano de corazón 🔥";
+        img.src = "IMG_RANGO3.png";
+    } else {
+        comment.innerText = "Nivel 80–100: ERES UN BOOYANO LEGENDADO! ⭐";
+        img.src = "IMG_RANGO4.png";
+    }
+}
+
+</script>
+
+</body>
+</html>
