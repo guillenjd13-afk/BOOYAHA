@@ -481,29 +481,33 @@ function finishQuiz() {
     quizScreen.classList.add("hidden");
     resultScreen.classList.remove("hidden");
 
-    let score = 0;
+   let score = 0;
 
-    questions.forEach(q => {
-        const temp = document.createElement("div");
-        temp.innerHTML = q.html;
+questions.forEach(q => {
+    const temp = document.createElement("div");
+    temp.innerHTML = q.html;
 
-        const correctInputs = Array.from(temp.querySelectorAll("[data-correct='true']")).length;
+    const correctInputs = Array.from(temp.querySelectorAll("[data-correct='true']")).length;
 
-        let userCorrect = 0;
-        let userWrong = 0;
+    let userCorrect = 0;
+    let userWrong = 0;
 
-        if (q.saved) {
-            q.saved.forEach((checked, i) => {
-                const isCorrect = temp.querySelectorAll("input")[i].dataset.correct === "true";
-                if (checked && isCorrect) userCorrect++;
-                if (checked && !isCorrect) userWrong++;
-            });
-        }
+    if (q.saved) {
+        q.saved.forEach((checked, i) => {
+            const isCorrect = temp.querySelectorAll("input")[i].dataset.correct === "true";
+            if (checked && isCorrect) userCorrect++;
+            if (checked && !isCorrect) userWrong++;
+        });
+    }
 
-        if (userCorrect >= 1 && userWrong === 0) {
-            score += pointsPerQuestion;
-        }
-    });
+    // Al menos una correcta marcada y ninguna incorrecta
+    if (userCorrect >= 1 && userWrong === 0) {
+        score += 1;  // 1 punto por pregunta
+    }
+});
+
+// Convertir a escala 0-100
+score = Math.round((score / total) * 100);
 
     score = Math.round(score);
 
@@ -531,4 +535,5 @@ function finishQuiz() {
 
 </body>
 </html>
+
 
